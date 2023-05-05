@@ -31,9 +31,9 @@ app.get("/api/data", async (req, res) => {
       const jsonString = JSON.stringify(data);
       //let l_cryData = encryptData(jsonString)
       // console.log(l_crpKey);
-      //res.json(jsonString);
+      res.json(jsonString);
 
-      res.send("<p>"+jsonString+"</p>");
+      //res.send("<p>"+jsonString+"</p>");
     })
     .catch(error => {
       console.error(error);
