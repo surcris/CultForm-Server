@@ -17,6 +17,11 @@ app.use(express.json());
 //   return CryptoJS.AES.encrypt(data, key).toString();
 // }
 
+app.get("/", async (req, res) => {
+  
+  res.send("<p>Coucou</p>");
+    
+});
 app.get("/api/data", async (req, res) => {
   //obtenir les données une seule fois
   dbJoueur.once('value')
@@ -28,7 +33,7 @@ app.get("/api/data", async (req, res) => {
       // console.log(l_crpKey);
       res.json(jsonString);
 
-      //res.send(data);
+      res.send("<p>"+jsonString+"</p>");
     })
     .catch(error => {
       console.error(error);
