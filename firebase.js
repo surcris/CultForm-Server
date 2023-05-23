@@ -1,5 +1,6 @@
 import firebase from "firebase/app/dist/index.cjs.js"
 import 'firebase/database/dist/index.cjs.js';
+import "firebase/auth/dist/index.cjs.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -17,7 +18,10 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+//const app = firebase.initializeApp(firebaseConfig);
 const dbJoueur = firebase.database().ref('joueur');
-
+const auth = firebase.auth();
 
 export default dbJoueur;
+
+export {auth}

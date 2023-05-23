@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import {auth} from "./firebase.js";
 import dbJoueur from "./firebase.js";
 // import CryptoJS from 'crypto-js';
 import dotenv from "dotenv";
@@ -21,6 +22,22 @@ app.get("/", async (req, res) => {
   
   res.send("<p>Coucou</p>");
     
+});
+app.put("/api/user", async (req, res) => {
+  let email = "tit8@gmail.com"
+  let password = "1234567777"
+  auth.createUserWithEmailAndPassword(email, password)
+  .then((userCredential) => {
+    // Signed in 
+    res.status(200).json({ message: 'successfully.' });
+    
+    // ...
+  })
+  .catch((error) => {
+    res.status(500).json({ message: 'An error occurred while updating data.' });
+    
+    // ..
+  });
 });
 app.get("/api/data", async (req, res) => {
   //obtenir les données une seule fois
