@@ -24,20 +24,15 @@ app.get("/", async (req, res) => {
     
 });
 app.put("/api/user", async (req, res) => {
-  let email = "tit8@gmail.com"
-  let password = "1234567777"
+  const { email, password } = req.body;
   auth.createUserWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-    // Signed in 
-    res.status(200).json({ message: 'successfully.' });
-    
-    // ...
-  })
-  .catch((error) => {
-    res.status(500).json({ message: 'An error occurred while updating data.' });
-    
-    // ..
-  });
+    .then((userCredential) => {
+      // Utilisez les données de userCredential ou effectuez d'autres opérations
+      res.status(200).json({ message: 'Utilisateur créé avec succès.' });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Une erreur s'est produite lors de la création de l'utilisateur." });
+    });
 });
 app.get("/api/data", async (req, res) => {
   //obtenir les données une seule fois
