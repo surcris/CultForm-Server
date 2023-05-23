@@ -23,6 +23,27 @@ app.get("/", async (req, res) => {
   res.send("<p>Coucou</p>");
     
 });
+
+app.put("/api/user/connexionUser", async (req, res) => {
+  const infoConnexion = req.body;
+  console.log(infoConnexion);
+
+  auth.signInWithEmailAndPassword(infoConnexion.email, infoConnexion.password)
+    .then((userCredential) => {
+      // Connexion réussie, récupérer l'utilisateur connecté
+      const user = userCredential.user;
+      console.log('Utilisateur connecté ' );
+      const userSend = auth.currentUser;
+      res.status(200).json({ message: userSend.uid });
+      console.log(userSend.uid)
+    })
+    .catch((error) => {
+      // Erreur lors de la connexion, gérer l'erreur
+      console.error('Erreur de connexion :', error);
+    });
+    
+});
+
 app.put("/api/user/addUserA", async (req, res) => {
   const infoUser = req.body;
   console.log(infoUser)
