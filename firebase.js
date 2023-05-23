@@ -1,4 +1,5 @@
 import firebase from "firebase/app/dist/index.cjs.js"
+import admin from "firebase-admin"
 import 'firebase/database/dist/index.cjs.js';
 import "firebase/auth/dist/index.cjs.js";
 import dotenv from "dotenv";
@@ -20,8 +21,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 //const app = firebase.initializeApp(firebaseConfig);
 const dbJoueur = firebase.database().ref('joueur');
+const dbUser= firebase.database().ref('user');
 const auth = firebase.auth();
+//const getUser = firebase.getAuth();
 
 export default dbJoueur;
 
-export {auth}
+export {auth,firebase,admin,dbUser}
