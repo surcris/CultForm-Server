@@ -17,6 +17,11 @@ function encryptData(data) {
   const key = process.env.APP_KEY;
   return CryptoJS.AES.encrypt(data, key).toString();
 }
+function decrypt(data) {
+  const key = process.env.APP_KEY;
+  const bytes = CryptoJS.AES.decrypt(data, key);
+  return bytes.toString(CryptoJS.enc.Utf8);
+}
 
 app.get("/", async (req, res) => {
   
@@ -24,18 +29,19 @@ app.get("/", async (req, res) => {
     
 });
 
+
 app.put("/api/user/connexionUser", async (req, res) => {
   const infoConnexion = req.body;
-  console.log(infoConnexion);
-  
+  //console.log(infoConnexion);
+
   auth.signInWithEmailAndPassword(infoConnexion.email, infoConnexion.password)
     .then((userCredential) => {
       // Connexion réussie, récupérer l'utilisateur connecté
       const user = userCredential.user;
       console.log('Utilisateur connecté ' );
       const userSend = auth.currentUser;
-      res.status(200).json({ message: userSend.uid });
-      console.log(userSend.uid)
+      res.status(200).json({ message: encryptData(userSend.uid)  });
+      //console.log(userCredential)
     })
     .catch((error) => {
       // Erreur lors de la connexion, gérer l'erreur
@@ -44,10 +50,10 @@ app.put("/api/user/connexionUser", async (req, res) => {
     
 });
 
+
 app.put("/api/user/addUserA", async (req, res) => {
   const infoUser = req.body;
-  console.log(infoUser)
-  
+  //console.log(infoUser)
   auth.fetchSignInMethodsForEmail(infoUser.email)
     .then((signInMethods) => {
       if (signInMethods.length > 0) {
@@ -56,11 +62,13 @@ app.put("/api/user/addUserA", async (req, res) => {
         console.log('Cet utilisateur existe déjà.')
       } else {
         //L'adresse e-mail est disponible, créer un nouvel utilisateur
+        
         auth.createUserWithEmailAndPassword(infoUser.email, infoUser.password)
           .then((userCredential) => {
             // Utilisez les données de userCredential ou effectuez d'autres opérations
-            res.status(200).json({ message: 'Utilisateur créé avec succès.' });
+            res.status(200).json({ message: 'Utilisateur créé avec succès.',uid: userCredential.user.uid});
             console.log('Utilisateur créé avec succès.')
+            //console.log(userCredential.user.uid)
             //ajouter les donnée de l'utilisateur dans la BDD
             
           })
@@ -75,11 +83,16 @@ app.put("/api/user/addUserA", async (req, res) => {
       console.log("Une erreur s'est produite lors de la vérification de l'adresse e-mail.")
     });
 });
+
+
 app.put("/api/user/addUserR", async (req, res) => {
   let infoUser = req.body;
+  
   for (const info in infoUser) {
     infoUser[info] = encryptData(infoUser[info]);
   }
+  infoUser.password = null;
+  infoUser.passWc = null;
   dbUser.push(infoUser)
     .then(response =>{
       
@@ -91,6 +104,8 @@ app.put("/api/user/addUserR", async (req, res) => {
     })
   
 });
+
+
 
 app.get("/api/data", async (req, res) => {
   //obtenir les données une seule fois
@@ -156,6 +171,6 @@ app.put('/api/data/', (req, res) => {
 
 });
 
-app.listen(3001, () => {
-  console.log("Server running on port 3001");
+app.listen(3081, () => {
+  console.log("Server running on port 3081");
 });
