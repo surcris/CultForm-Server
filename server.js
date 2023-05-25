@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import {auth,admin,dbUser} from "./firebase.js";
 import dbJoueur from "./firebase.js";
-// import CryptoJS from 'crypto-js';
+import CryptoJS from 'crypto-js';
 import dotenv from "dotenv";
 
 
@@ -13,10 +13,10 @@ app.use(express.json());
 app.use(cors());
 
 
-// function encryptData(data) {
-//   const key = process.env.APP_KEY;
-//   return CryptoJS.AES.encrypt(data, key).toString();
-// }
+function encryptData(data) {
+  const key = process.env.APP_KEY;
+  return CryptoJS.AES.encrypt(data, key).toString();
+}
 
 app.get("/", async (req, res) => {
   
@@ -27,7 +27,7 @@ app.get("/", async (req, res) => {
 app.put("/api/user/connexionUser", async (req, res) => {
   const infoConnexion = req.body;
   console.log(infoConnexion);
-
+  
   auth.signInWithEmailAndPassword(infoConnexion.email, infoConnexion.password)
     .then((userCredential) => {
       // Connexion réussie, récupérer l'utilisateur connecté
@@ -48,7 +48,7 @@ app.put("/api/user/addUserA", async (req, res) => {
   const infoUser = req.body;
   console.log(infoUser)
   
-  auth.fetchSignInMethodsForEmail(infoUser.mail)
+  auth.fetchSignInMethodsForEmail(infoUser.email)
     .then((signInMethods) => {
       if (signInMethods.length > 0) {
         // L'adresse e-mail est déjà associée à un compte utilisateur existant
@@ -56,7 +56,7 @@ app.put("/api/user/addUserA", async (req, res) => {
         console.log('Cet utilisateur existe déjà.')
       } else {
         //L'adresse e-mail est disponible, créer un nouvel utilisateur
-        auth.createUserWithEmailAndPassword(infoUser.mail, infoUser.passWc)
+        auth.createUserWithEmailAndPassword(infoUser.email, infoUser.password)
           .then((userCredential) => {
             // Utilisez les données de userCredential ou effectuez d'autres opérations
             res.status(200).json({ message: 'Utilisateur créé avec succès.' });
@@ -72,12 +72,17 @@ app.put("/api/user/addUserA", async (req, res) => {
     })
     .catch((error) => {
       res.status(500).json({ message: "Une erreur s'est produite lors de la vérification de l'adresse e-mail." });
+      console.log("Une erreur s'est produite lors de la vérification de l'adresse e-mail.")
     });
 });
 app.put("/api/user/addUserR", async (req, res) => {
-  const infoUser = req.body;
+  let infoUser = req.body;
+  for (const info in infoUser) {
+    infoUser[info] = encryptData(infoUser[info]);
+  }
   dbUser.push(infoUser)
     .then(response =>{
+      
       res.status(200).json({ message: 'Données ajoutées avec succès.' });
     })
     .catch(error =>{
