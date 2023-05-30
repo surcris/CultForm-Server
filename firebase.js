@@ -20,7 +20,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 //const app = firebase.initializeApp(firebaseConfig);
-const dbJoueur = firebase.database().ref('joueur');
+const dbJoueur = firebase.database().ref('personnage');
 const dbUser= firebase.database().ref('user');
 const auth = firebase.auth();
 //const getUser = firebase.getAuth();

@@ -105,7 +105,20 @@ app.put("/api/user/addUserR", async (req, res) => {
   
 });
 
-
+app.put("/api/user/deconnexion", async (req, res) => {
+  auth.signOut()
+  .then((response) => {
+    // Déconnexion réussie
+    res.status(200).json({ message: 'Déconnexion avec succées' });
+    console.log('Utilisateur déconnecté');
+  })
+  .catch((error) => {
+    // Gestion des erreurs de déconnexion
+    res.status(500).json({ message: "Une erreur s\'est produite lors de la déconnexion." });
+    console.error('Erreur lors de la déconnexion', error);
+  });
+  
+});
 
 app.get("/api/data", async (req, res) => {
   //obtenir les données une seule fois
@@ -115,7 +128,7 @@ app.get("/api/data", async (req, res) => {
 
       const jsonString = JSON.stringify(data);
       //let l_cryData = encryptData(jsonString)
-      // console.log(l_crpKey);
+      //console.log(jsonString);
       res.json(jsonString);
 
       //res.send("<p>"+jsonString+"</p>");
@@ -125,16 +138,38 @@ app.get("/api/data", async (req, res) => {
       res.status(500).send('Error retrieving data');
     });
 });
-app.get("/api/data/:id", async (req, res) => {
+app.get("/api/perso/:id", async (req, res) => {
   //obtenir les données une seule fois
   const id = req.params.id;
-
-  dbJoueur.child(id).once('value')
+  const persoData = [];
+  dbJoueur.once('value')
     .then(snapshot => {
       const data = snapshot.val();
-      const jsonString = JSON.stringify(data);
+      //console.log(data);
+      if (data) {
+        if (Array.isArray(data)) {
+          // Parcourir les données pour trouver la correspondance avec idUser
+          data.forEach(item => {
+            if (item.idUser === id) {
+              // console.log('Tableau');
+              // console.log(item.idUser);
+            }
+          });
+        } else if (typeof data === 'object') {
+          // Parcourir les propriétés de l'objet pour trouver la correspondance avec idUser
+          for (const key in data) {
+            if (data.hasOwnProperty(key) && data[key].idUser === id) {
+              // console.log('Objet');
+              // console.log(data[key].idUser);
+              persoData.push(data[key])
+            }
+          }
+        }
+      }
+
+      const jsonString = JSON.stringify(persoData);
       //let l_cryData = encryptData(jsonString)
-      // console.log(l_crpKey);
+      //console.log(persoData);
       res.json(jsonString);
 
       //res.send(data);
@@ -145,23 +180,23 @@ app.get("/api/data/:id", async (req, res) => {
     });
 });
 
-app.put('/api/data/:id', (req, res) => {
-  const id = req.params.id;
-  const updatedData = req.body;
+app.put('/api/data/', (req, res) => {
+  //const id = req.params.id;
+  const personnageData = req.body;
 
-  dbJoueur.child(id).set(updatedData, (error) => {
+  dbJoueur.push(personnageData, (error) => {
     if (error) {
-      res.status(500).json({ message: 'An error occurred while updating data.' });
+      res.status(500).json({ message: 'Erreur lors de l\'enregistrement des données' });
     } else {
-      res.status(200).json({ message: 'Data updated successfully.' });
+      res.status(200).json({ message: 'Données enregistrer avec succée' });
     }
   });
 });
 
-app.put('/api/data/', (req, res) => {
-  //const id = req.params.id;
+app.put('/api/data/:id', (req, res) => {
+  const id = req.params.id;
   const updatedData = req.body;
-  dbJoueur.push(updatedData, (error) => {
+  dbJoueur.child(id).push(updatedData, (error) => {
     if (error) {
       res.status(500).json({ message: 'An error occurred while updating data.' });
     } else {
