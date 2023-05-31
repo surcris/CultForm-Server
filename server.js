@@ -66,7 +66,7 @@ app.put("/api/user/addUserA", async (req, res) => {
         auth.createUserWithEmailAndPassword(infoUser.email, infoUser.password)
           .then((userCredential) => {
             // Utilisez les données de userCredential ou effectuez d'autres opérations
-            res.status(200).json({ message: 'Utilisateur créé avec succès.',uid: userCredential.user.uid});
+            res.status(200).json({ message: 'Utilisateur créé avec succès.',uid: encryptData(userCredential.user.uid)});
             console.log('Utilisateur créé avec succès.')
             //console.log(userCredential.user.uid)
             //ajouter les donnée de l'utilisateur dans la BDD
