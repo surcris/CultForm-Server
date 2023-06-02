@@ -131,45 +131,39 @@ app.get("/api/data", async (req, res) => {
     });
 });
 app.get("/api/perso/:id", async (req, res) => {
-  //obtenir les données une seule fois
   const id = req.params.id;
   const persoData = [];
-  dbJoueur.once('value')
-    .then(snapshot => {
-      const data = snapshot.val();
-      //console.log(data);
-      if (data) {
-        if (Array.isArray(data)) {
-          // Parcourir les données pour trouver la correspondance avec idUser
-          data.forEach(item => {
-            if (item.idUser === id) {
-              // console.log('Tableau');
-              // console.log(item.idUser);
-            }
-          });
-        } else if (typeof data === 'object') {
-          // Parcourir les propriétés de l'objet pour trouver la correspondance avec idUser
-          for (const key in data) {
-            if (data.hasOwnProperty(key) && data[key].idUser === id) {
-              // console.log('Objet');
-              // console.log(data[key].idUser);
-              persoData.push(data[key])
-            }
+
+  try {
+    const snapshot = await dbJoueur.once('value');
+    const data = snapshot.val();
+
+    if (data) {
+      if (Array.isArray(data)) {
+        data.forEach(item => {
+          if (item.idUser === id) {
+            persoData.push(item);
+          }
+        });
+      } else if (typeof data === 'object') {
+        for (const key in data) {
+          if (data.hasOwnProperty(key) && data[key].idUser === id) {
+            persoData.push(data[key]);
           }
         }
       }
+    }
 
+    if (persoData.length > 0) {
       const jsonString = JSON.stringify(persoData);
-      //let l_cryData = encryptData(jsonString)
-      //console.log(persoData);
       res.json(jsonString);
-
-      //res.send(data);
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).send('Error retrieving data');
-    });
+    } else {
+      res.status(404).json({ message: 'Aucune donnée trouvée pour cet ID utilisateur.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error retrieving data');
+  }
 });
 
 app.put('/api/data/', (req, res) => {
