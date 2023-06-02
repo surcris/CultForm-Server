@@ -53,26 +53,35 @@ app.put("/api/user/connexionUser", async (req, res) => {
 
 app.put("/api/user/addUserA", async (req, res) => {
   const infoUser = req.body;
-  try {
-    const signInMethods = await auth.fetchSignInMethodsForEmail(infoUser.email);
-
-    if (signInMethods.length > 0) {
-      res.status(409).json({ message: 'Cet utilisateur existe déjà.' });
-      console.log('Cet utilisateur existe déjà.');
-      return;
-    }
-
-    const userCredential = await auth.createUserWithEmailAndPassword(infoUser.email, infoUser.password);
-
-    await auth.currentUser.sendEmailVerification();
-
-    res.status(200).json({ message: 'Utilisateur créé avec succès.', uid: userCredential.user.uid });
-    console.log('Utilisateur créé avec succès.');
-    console.log("E-mail de confirmation envoyé !");
-  } catch (error) {
-    res.status(500).json({ message: "Une erreur s'est produite lors de la création de l'utilisateur." });
-    console.error(error);
-  }
+  //console.log(infoUser)
+  auth.fetchSignInMethodsForEmail(infoUser.email)
+    .then((signInMethods) => {
+      if (signInMethods.length > 0) {
+        // L'adresse e-mail est déjà associée à un compte utilisateur existant
+        res.status(409).json({ message: 'Cet utilisateur existe déjà.' });
+        console.log('Cet utilisateur existe déjà.')
+      } else {
+        //L'adresse e-mail est disponible, créer un nouvel utilisateur
+        
+        auth.createUserWithEmailAndPassword(infoUser.email, infoUser.password)
+          .then((userCredential) => {
+            // Utilisez les données de userCredential ou effectuez d'autres opérations
+            res.status(200).json({ message: 'Utilisateur créé avec succès.',uid: encryptData(userCredential.user.uid)});
+            console.log('Utilisateur créé avec succès.')
+            //console.log(userCredential.user.uid)
+            //ajouter les donnée de l'utilisateur dans la BDD
+            
+          })
+          .catch((error) => {
+            res.status(500).json({ message: "Une erreur s'est produite lors de la création de l'utilisateur." });
+            console.log("Une erreur s'est produite lors de la création de l'utilisateur.")
+          });
+      }
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Une erreur s'est produite lors de la vérification de l'adresse e-mail." });
+      console.log("Une erreur s'est produite lors de la vérification de l'adresse e-mail.")
+    });
 });
 
 
