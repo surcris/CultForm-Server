@@ -1,0 +1,16 @@
+import CryptoJS from 'crypto-js';
+import dotenv from "dotenv";
+
+
+export default class Utils {
+    encryptData(data) {
+        const key = process.env.APP_KEY;
+        return CryptoJS.AES.encrypt(data, key).toString();
+    }
+    decrypt(data) {
+        const key = process.env.APP_KEY;
+        const bytes = CryptoJS.AES.decrypt(data, key);
+        return bytes.toString(CryptoJS.enc.Utf8);
+    }
+
+}
