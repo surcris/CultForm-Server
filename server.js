@@ -17,15 +17,17 @@ app.enable('trust proxy');
 app.use(express.json());
 app.use(cors());
 
-app.use('/auth',routerAuth);
-app.use('/perso',routerPers);
-app.use('/users',routerUser);
-
 app.get("/", async (req, res) => {
   
   res.send("<p>Coucou</p>");
     
 });
+
+app.use('/auth',routerAuth);
+app.use('/perso',routerPers);
+app.use('/users',routerUser);
+
+
 
 
 
