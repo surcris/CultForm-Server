@@ -4,7 +4,9 @@
   "description": "\"# CultForm-Server\"",
   "type": "module",
   "main": "server.js",
-  
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
