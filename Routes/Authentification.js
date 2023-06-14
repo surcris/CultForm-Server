@@ -4,7 +4,7 @@ import {jwtSecret,jwtExpiration} from "../config.js";
 import {auth,dbUser} from "../firebase.js";
 import authe from "../firebaseAdmin.js";
 import {fireAd,admin} from "../firebaseAdmin.js";
-
+import CryptoJS from 'crypto-js';
 const routerAuth = express.Router();
 
 
