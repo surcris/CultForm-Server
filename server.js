@@ -5,6 +5,8 @@ import dbJoueur from "./firebase.js";
 import fireAd from "./firebaseAdmin.js";
 import CryptoJS from 'crypto-js';
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import {jwtSecret,jwtExpiration} from "../config.js";
 
 // import routerAuth from "./Routes/Authentification.js";
 // import routerPers from "./Routes/Personnages.js";
