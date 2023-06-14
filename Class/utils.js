@@ -2,7 +2,7 @@ import CryptoJS from 'crypto-js';
 import dotenv from "dotenv";
 
 
-export default class Utils {
+class Utils {
     encryptData(data) {
         const key = process.env.APP_KEY;
         return CryptoJS.AES.encrypt(data, key).toString();
@@ -14,3 +14,5 @@ export default class Utils {
     }
 
 }
+const util = new Utils()
+export default util;

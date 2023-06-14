@@ -4,9 +4,9 @@ import {jwtSecret,jwtExpiration} from "../config.js";
 import {auth,dbUser} from "../firebase.js";
 import authe from "../firebaseAdmin.js";
 import {fireAd,admin} from "../firebaseAdmin.js";
-import Utils from "../Class/Utils.js";
+import util from "../Class/Utils.js";
 const routerAuth = express.Router();
-const util = new Utils();
+
 
 const publicKey = process.env.APP_PUBLIC_OPEN;
 
