@@ -95,6 +95,8 @@ app.put("/auth/deconnexion", async (req, res) => {
 
 app.put("/auth/connexionUser",cors(), async (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
   const infoConnexion = req.body;
   const clientIPReceivedIP = req.connection.remoteAddress;
 
