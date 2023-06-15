@@ -18,7 +18,7 @@ const app = express();
 app.enable('trust proxy');
 app.use(express.json());
 
-app.use(cors({credentials: true, origin: 'https://calm-florentine-8d2e31.netlify.app'}));
+app.use(cors({credentials: true, origin: "*"}));
 
 app.get("/", async (req, res) => {
   
@@ -94,6 +94,7 @@ app.put("/auth/deconnexion", async (req, res) => {
 });
 
 app.put("/auth/connexionUser",cors(), async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
   const infoConnexion = req.body;
   const clientIPReceivedIP = req.connection.remoteAddress;
 
