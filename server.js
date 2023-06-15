@@ -17,12 +17,18 @@ dotenv.config();
 const app = express();
 app.enable('trust proxy');
 app.use(express.json());
+
 app.use(cors());
 
 app.get("/", async (req, res) => {
   
   res.send("<p>Coucou</p>");
     
+});
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "YOUR-DOMAIN.TLD"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
 });
 
 // app.use('/auth',routerAuth);
@@ -87,7 +93,7 @@ app.put("/auth/deconnexion", async (req, res) => {
 
 });
 
-app.put("/auth/connexionUser", async (req, res) => {
+app.put("/auth/connexionUser",cors(), async (req, res) => {
   const infoConnexion = req.body;
   const clientIPReceivedIP = req.connection.remoteAddress;
 
