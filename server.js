@@ -18,7 +18,7 @@ const app = express();
 app.enable('trust proxy');
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({credentials: true, origin: 'https://calm-florentine-8d2e31.netlify.app'}));
 
 app.get("/", async (req, res) => {
   
