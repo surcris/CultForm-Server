@@ -50,7 +50,7 @@ function decrypt(data) {
 }
 
 ///////////////////////////////////////////////////
-app.put("/auth/connectServ", async (req, res) => {
+app.get("/auth/connectServ", async (req, res) => {
   //const infoConnexion = req.body;
   const authorizationHeader = req.headers['authorization'];
   const decryptToReceive = decrypt(authorizationHeader);
