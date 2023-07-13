@@ -81,7 +81,7 @@ app.put("/auth/connectServ", async (req, res) => {
   }
 });
 
-app.get("/auth/deconnexion", async (req, res) => {
+app.put("/auth/deconnexion", async (req, res) => {
     auth.signOut()
         .then((response) => {
             // Déconnexion réussie
