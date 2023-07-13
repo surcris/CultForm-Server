@@ -18,7 +18,10 @@ const app = express();
 app.enable('trust proxy');
 app.use(express.json());
 
-app.use(cors({credentials: true, origin: "*"}));
+app.use(cors({
+    origin: "https://cutlform.netlify.app/"
+}
+));
 
 app.get("/", async (req, res) => {
   
