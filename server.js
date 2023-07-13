@@ -18,8 +18,9 @@ const app = express();
 app.enable('trust proxy');
 app.use(express.json());
 
+// const allowlist = ['https://cutlform.netlify.app/', 'https://calm-florentine-8d2e31.netlify.app/']
 app.use(cors({
-    origin: "https://cutlform.netlify.app/"
+    origin: ['https://cutlform.netlify.app/', 'https://calm-florentine-8d2e31.netlify.app/']
 }
 ));
 
