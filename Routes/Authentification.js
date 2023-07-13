@@ -56,7 +56,7 @@ routerAuth.put("/deconnexion", async (req, res) => {
 
 });
 
-routerAuth.put("/connexionUser", async (req, res) => {
+routerAuth.get("/connexionUser", async (req, res) => {
   const infoConnexion = req.body;
   const clientIPReceivedIP = req.connection.remoteAddress;
 
