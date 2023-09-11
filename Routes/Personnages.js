@@ -4,18 +4,21 @@ import jwt from "jsonwebtoken";
 import {jwtSecret,jwtExpiration} from "../config.js";
 const routerPers = express.Router();
 
-routerPers.put('/pushPerso/', (req, res) => {
+
+routerPers.put('/addPerso/', (req, res) => {
     //const id = req.params.id;
     try {
         const personnageData = req.body;
         const idToken = req.headers['authorization'];
+        // Verification du token
         jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
             if (err) {
                 // Le token est invalide ou a expiré
-                console.log("Unauthorized pushPerso");
-                res.status(401).json({ message: 'Unauthorized' });
+                console.log("Token invalide");
+                res.status(401).json({ message: 'Token invalide' });
             } else {
-                console.log("Authorisation pour créer un personnage");
+                // Le token est valide
+                console.log("Autorisation de créer un personnage");
                 dbJoueur.push(personnageData, (error) => {
                     if (error) {
                         res.status(500).json({ message: 'Erreur lors de l\'enregistrement du personnage' });
@@ -28,43 +31,45 @@ routerPers.put('/pushPerso/', (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error retrieving data');
+        res.status(500).send('Erreur lors de la réception des données');
     }
 });
 
-routerPers.put('/api/data/:id', (req, res) => {
+routerPers.put('/updateData/:id', (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
     dbJoueur.child(id).push(updatedData, (error) => {
         if (error) {
-            res.status(500).json({ message: 'An error occurred while updating data.' });
+            res.status(500).json({ message: 'Erreur lors de la réception des données' });
         } else {
-            res.status(200).json({ message: 'Data updated successfully.' });
+            res.status(200).json({ message: 'Données reçue avec succées' });
         }
     })
 
 });
 
-routerPers.put("/search/id/", async (req, res) => {
+routerPers.put("/searchDataId/", async (req, res) => {
     const persoData = [];
 
     try {
         const idToken = req.headers['authorization'];
-        //const key = req.headers['myKey'];
-        //console.log(idToken);
+        // Verification du token
         jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
             if (err) {
                 // Le token est invalide ou a expiré
-                console.log("Unauthorized search ID");
-                res.status(401).json({ message: 'Unauthorized' });
+                console.log("Token invalide");
+                res.status(401).json({ message: 'Token invalide' });
             } else {
-                console.log("Authorisation pour rechercher des personnage avec un ID");
+                // Le token est valide 
+                console.log("Autorisation pour rechercher des personnage avec un ID");
                 //console.log(decodedToken);
                 const uid = decodedToken.uid;
                 const snapshot = await dbJoueur.once('value');
                 const data = snapshot.val();
 
+
                 if (data) {
+                    // si data est un tableau ou un objet 
                     if (Array.isArray(data)) {
                         data.forEach(item => {
                             if (item.idUser === uid) {
@@ -91,27 +96,30 @@ routerPers.put("/search/id/", async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error retrieving data');
+        res.status(500).send('Erreur lors de la réception des données');
     }
 });
 
-routerPers.put("/search/pseudo/", async (req, res) => {
+routerPers.put("/searchPersoPseudo/", async (req, res) => {
     const pseudo = req.headers['pseudo'];
     const persoData = [];
     //console.log(pseudo)
     try {
         const idToken = req.headers['authorization'];
+        // Verification du token
         jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
             if (err) {
                 // Le token est invalide ou a expiré
-                console.log("Unauthorized search pseudo");
-                res.status(401).json({ message: 'Unauthorized' });
+                console.log("Token invalide");
+                res.status(401).json({ message: 'Token invalide' });
             } else {
-                console.log("Authorisation pour rechercher un personnage avec un pseudo");
+                // Le token est valide 
+                console.log("Autorisation pour rechercher un personnage avec un pseudo");
                 const snapshot = await dbJoueur.once('value');
                 const data = snapshot.val();
 
                 if (data) {
+                    // si data est un tableau ou un objet 
                     if (Array.isArray(data)) {
                         data.forEach(item => {
                             if (item.pseudo === pseudo) {
@@ -140,7 +148,7 @@ routerPers.put("/search/pseudo/", async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error retrieving data');
+        res.status(500).send('Erreur lors de la réception des données');
     }
 });
 // app.get("/api/data", async (req, res) => {

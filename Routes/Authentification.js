@@ -28,19 +28,21 @@ routerAuth.put("/connectServ", async (req, res) => {
   
   //console.log(decryptToReceive);
   
+  // Verifie si les données reçu conresponde a un User
   if (auth.currentUser) {
     try {
       
       const userSend = auth.currentUser;
       //console.log(userSend.uid);
       if (userSend.uid === decryptToReceive) {
+        // Générer un token d'authentification avec l'uid du User d'une durée de validité de 5 secondes
         const token = jwt.sign({ uid: userSend.uid }, jwtSecret, { expiresIn: '5s' });
 
         res.status(200).json({ message: token });
         //console.log("Token envoyer")
       }
       
-      // Générer un token d'authentification avec une durée de validité de 5 secondes
+      
       
     } catch (error) {
       console.error('Une erreur s\'est produite lors de la récupération de l\'UID de l\'utilisateur :', error);
