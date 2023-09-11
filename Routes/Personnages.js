@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import {jwtSecret,jwtExpiration} from "../config.js";
 const routerPers = express.Router();
 
-routerPers.put('/addPerso/', (req, res) => {
+routerPers.put('/pushPerso/', (req, res) => {
     //const id = req.params.id;
     try {
         const personnageData = req.body;
@@ -12,8 +12,8 @@ routerPers.put('/addPerso/', (req, res) => {
         jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
             if (err) {
                 // Le token est invalide ou a expiré
-                console.log("token est invalide");
-                res.status(401).json({ message: 'token est invalide' });
+                console.log("Unauthorized pushPerso");
+                res.status(401).json({ message: 'Unauthorized' });
             } else {
                 console.log("Authorisation pour créer un personnage");
                 dbJoueur.push(personnageData, (error) => {
@@ -32,7 +32,7 @@ routerPers.put('/addPerso/', (req, res) => {
     }
 });
 
-routerPers.put('/updatePerso/:id', (req, res) => {
+routerPers.put('/api/data/:id', (req, res) => {
     const id = req.params.id;
     const updatedData = req.body;
     dbJoueur.child(id).push(updatedData, (error) => {
@@ -45,7 +45,7 @@ routerPers.put('/updatePerso/:id', (req, res) => {
 
 });
 
-routerPers.put("/searchPersos/id/", async (req, res) => {
+routerPers.put("/search/id/", async (req, res) => {
     const persoData = [];
 
     try {
@@ -55,10 +55,10 @@ routerPers.put("/searchPersos/id/", async (req, res) => {
         jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
             if (err) {
                 // Le token est invalide ou a expiré
-                console.log("token invalide");
-                res.status(401).json({ message: 'token invalide' });
+                console.log("Unauthorized search ID");
+                res.status(401).json({ message: 'Unauthorized' });
             } else {
-                console.log("Autorisation pour rechercher des personnage avec un ID");
+                console.log("Authorisation pour rechercher des personnage avec un ID");
                 //console.log(decodedToken);
                 const uid = decodedToken.uid;
                 const snapshot = await dbJoueur.once('value');
@@ -91,7 +91,7 @@ routerPers.put("/searchPersos/id/", async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Erreur lors de la recupération des données');
+        res.status(500).send('Error retrieving data');
     }
 });
 
@@ -104,10 +104,10 @@ routerPers.put("/search/pseudo/", async (req, res) => {
         jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
             if (err) {
                 // Le token est invalide ou a expiré
-                console.log("token invalide");
-                res.status(401).json({ message: 'token invalide' });
+                console.log("Unauthorized search pseudo");
+                res.status(401).json({ message: 'Unauthorized' });
             } else {
-                console.log("Autorisation pour rechercher un personnage avec un pseudo");
+                console.log("Authorisation pour rechercher un personnage avec un pseudo");
                 const snapshot = await dbJoueur.once('value');
                 const data = snapshot.val();
 
@@ -143,6 +143,23 @@ routerPers.put("/search/pseudo/", async (req, res) => {
         res.status(500).send('Error retrieving data');
     }
 });
+// app.get("/api/data", async (req, res) => {
+//     //obtenir les données une seule fois
+//     dbJoueur.once('value')
+//         .then(snapshot => {
+//             const data = snapshot.val();
 
+//             const jsonString = JSON.stringify(data);
+//             //let l_cryData = encryptData(jsonString)
+//             //console.log(jsonString);
+//             res.json(jsonString);
+
+//             //res.send("<p>"+jsonString+"</p>");
+//         })
+//         .catch(error => {
+//             console.error(error);
+//             res.status(500).send('Error retrieving data');
+//         });
+// });
 
 export default routerPers;
