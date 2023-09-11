@@ -4,16 +4,27 @@ import {jwtSecret,jwtExpiration} from "../config.js";
 import {auth,dbUser} from "../firebase.js";
 import authe from "../firebaseAdmin.js";
 import {fireAd,admin} from "../firebaseAdmin.js";
-import Utils from "../Class/Utils.js";
+import CryptoJS from 'crypto-js';
 const routerAuth = express.Router();
-const util = new Utils();
+
 
 const publicKey = process.env.APP_PUBLIC_OPEN;
+
+function encryptData(data) {
+  const key = process.env.APP_KEY;
+  return CryptoJS.AES.encrypt(data, key).toString();
+}
+function decrypt(data) {
+  const key = process.env.APP_KEY;
+  const bytes = CryptoJS.AES.decrypt(data, key);
+  return bytes.toString(CryptoJS.enc.Utf8);
+}
+
 
 routerAuth.put("/connectServ", async (req, res) => {
   //const infoConnexion = req.body;
   const authorizationHeader = req.headers['authorization'];
-  const decryptToReceive = util.decrypt(authorizationHeader);
+  const decryptToReceive = decrypt(authorizationHeader);
   
   //console.log(decryptToReceive);
   
@@ -75,7 +86,7 @@ routerAuth.put("/connexionUser", async (req, res) => {
       const userSend = auth.currentUser;
       const clientInfo = {uip:userSend.uid,ip:clientIP}
 
-      res.status(200).json({ message: util.encryptData(userSend.uid)  });
+      res.status(200).json({ message: encryptData(userSend.uid)  });
       //console.log(userCredential)
     })
     .catch((error) => {

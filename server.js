@@ -24,6 +24,11 @@ app.use(cors({
 }
 ));
 
+app.use(cors({
+    origin: ['https://cutlform.netlify.app/', 'https://calm-florentine-8d2e31.netlify.app/']
+}
+));
+
 app.get("/", async (req, res) => {
   
   res.send("<p>Coucou</p>");

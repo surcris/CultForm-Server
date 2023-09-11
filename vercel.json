@@ -1,6 +1,29 @@
 {
     "version":2,
     "name":"cultform-server",
-    "builds":[{ "src":"server.js","use":"@vercel/node"}],
-    "routes":[{ "src":"/(.*)", "dest":"/server.js" }]
+    "builds":[{ "src":"server.js","use":"@vercel/node"},
+        { "src":"Routes/Authentification.js","use":"@vercel/node"},
+        { "src":"Routes/Personnages.js","use":"@vercel/node"},
+        { "src":"Routes/Utilisateur.js","use":"@vercel/node"}
+        ],
+    "routes":[
+        { "src":"/(.*)", 
+            "dest":"/server.js",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTION"] 
+        },
+        { "src":"/auth/(.*)", 
+            "dest":"/server.js",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTION"] 
+        },
+        { "src":"/perso/(.*)", 
+            "dest":"/Routes/Personnages.js",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTION"] 
+        },
+        { "src":"/users/(.*)", 
+            "dest":"/server.js",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTION"] 
+        }
+    ]
+    
+    
 }

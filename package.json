@@ -31,6 +31,7 @@
     "firebase-admin": "^11.8.0",
     "jsonwebtoken": "^9.0.0",
     "nodemon": "^2.0.22",
-    "openssl": "^2.0.0"
+    "openssl": "^2.0.0",
+    "vercel": "^30.2.1"
   }
 }
