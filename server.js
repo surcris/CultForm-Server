@@ -28,3 +28,6 @@ app.use('/perso',routerPers);
 app.use('/users',routerUser);
 
 
+app.listen(3081, () => {
+  console.log("Serveur ecoute au port 3081")
+})
