@@ -42,13 +42,13 @@ routerPers.put('/updateData/:id', (req, res) => {
         if (error) {
             res.status(500).json({ message: 'Erreur lors de la réception des données' });
         } else {
-            res.status(200).json({ message: 'Données reçue avec succées' });
+            res.status(200).json({ message: 'Données modifier avec succées' });
         }
     })
 
 });
 
-routerPers.put("/searchDataId/", async (req, res) => {
+routerPers.get("/searchDataId/", async (req, res) => {
     const persoData = [];
 
     try {
@@ -100,7 +100,7 @@ routerPers.put("/searchDataId/", async (req, res) => {
     }
 });
 
-routerPers.put("/searchPersoPseudo/", async (req, res) => {
+routerPers.get("/searchPersoPseudo/", async (req, res) => {
     const pseudo = req.headers['pseudo'];
     const persoData = [];
     //console.log(pseudo)
