@@ -141,7 +141,7 @@ routerPers.put("/searchPersoPseudo/", async (req, res) => {
                     res.status(200).json({ message: 'Personnage trouver avec ce Pseudo!' });
                     //res.json(jsonString);
                 } else {
-                    console.log("Personnage trouver avec ce Pseudo!");
+                    console.log("Aucun personnage trouver avec ce Pseudo!");
                     res.status(404).json({ message: 'Aucune donnée trouvée pour ce Pseudo.' });
                 }
             }
