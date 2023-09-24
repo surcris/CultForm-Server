@@ -48,7 +48,7 @@ routerPers.put('/updateData/:id', (req, res) => {
 
 });
 
-routerPers.get("/searchDataId/", async (req, res) => {
+routerPers.put("/searchDataId/", async (req, res) => {
     const persoData = [];
 
     try {
@@ -100,7 +100,7 @@ routerPers.get("/searchDataId/", async (req, res) => {
     }
 });
 
-routerPers.get("/searchPersoPseudo/", async (req, res) => {
+routerPers.put("/searchPersoPseudo/", async (req, res) => {
     const pseudo = req.headers['pseudo'];
     const persoData = [];
     //console.log(pseudo)
