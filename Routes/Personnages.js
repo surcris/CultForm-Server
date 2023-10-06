@@ -1,15 +1,25 @@
 import express from "express";
 import dbJoueur from "../firebase.js";
 import jwt from "jsonwebtoken";
+import CryptoJS from 'crypto-js';
 import {jwtSecret,jwtExpiration} from "../config.js";
 const routerPers = express.Router();
 
-
+function encryptData(data) {
+    const key = process.env.APP_KEY;
+    return CryptoJS.AES.encrypt(data, key).toString();
+}
+function decrypt(data) {
+    const key = process.env.APP_KEY;
+    const bytes = CryptoJS.AES.decrypt(data, key);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  }
 routerPers.put('/addPerso/', (req, res) => {
     //const id = req.params.id;
     try {
-        const personnageData = req.body;
+        const personnageData =  JSON.parse(decrypt(req.headers['perso']));
         const idToken = req.headers['authorization'];
+        console.log(personnageData)
         // Verification du token
         jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
             if (err) {
@@ -18,15 +28,19 @@ routerPers.put('/addPerso/', (req, res) => {
                 res.status(401).json({ message: 'Token invalide' });
             } else {
                 // Le token est valide
-                console.log("Autorisation de créer un personnage");
-                dbJoueur.push(personnageData, (error) => {
-                    if (error) {
-                        res.status(500).json({ message: 'Erreur lors de l\'enregistrement du personnage' });
-                    } else {
-                        console.log("Personnage enregistrer avec succée");
-                        res.status(200).json({ message: 'Personnage enregistrer avec succée' });
-                    }
-                });
+                console.log("Autorisation pour créer un personnage");
+                if(personnageData != null){
+                        dbJoueur.push(personnageData, (error) => {
+                            if (error) {
+                                res.status(500).json({ message: 'Erreur lors de l\'enregistrement du personnage' });
+                            } else {
+                                console.log("Personnage enregistrer avec succée");
+                                res.status(200).json({ message: 'Personnage enregistrer avec succée' });
+                            }
+                    });
+                }else{
+                    console.log("err");
+                }
             }
         });
     } catch (error) {
@@ -34,18 +48,32 @@ routerPers.put('/addPerso/', (req, res) => {
         res.status(500).send('Erreur lors de la réception des données');
     }
 });
-
 routerPers.put('/updateData/:id', (req, res) => {
-    const id = req.params.id;
-    const updatedData = req.body;
-    dbJoueur.child(id).push(updatedData, (error) => {
-        if (error) {
-            res.status(500).json({ message: 'Erreur lors de la réception des données' });
-        } else {
-            res.status(200).json({ message: 'Données modifier avec succées' });
-        }
-    })
+    try {
+        const idToken = req.headers['authorization'];
+        const id = req.params.id;
+        const updatedData = req.body;
 
+
+        jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
+            if (err) {
+                // Le token est invalide ou a expiré
+                console.log("Token invalide");
+                res.status(401).json({ message: 'Token invalide' });
+            } else {
+                dbJoueur.child(id).push(updatedData, (error) => {
+                    if (error) {
+                        res.status(500).json({ message: 'Erreur lors de la réception des données' });
+                    } else {
+                        res.status(200).json({ message: 'Données modifier avec succées' });
+                    }
+                })
+            }
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erreur lors de la réception des données');
+    }
 });
 
 routerPers.put("/searchDataId/", async (req, res) => {
@@ -53,6 +81,7 @@ routerPers.put("/searchDataId/", async (req, res) => {
 
     try {
         const idToken = req.headers['authorization'];
+        // console.log(idToken);
         // Verification du token
         jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
             if (err) {
@@ -87,6 +116,8 @@ routerPers.put("/searchDataId/", async (req, res) => {
 
                 if (persoData.length > 0) {
                     const jsonString = JSON.stringify(persoData);
+                    // let persoCrypte = encryptData(jsonString);
+                    // console.log(persoCrypte);
                     res.status(200).json({ message: jsonString });
                 } else {
                     res.status(404).json({ message: 'Aucune donnée trouvée pour cet ID utilisateur.' });
@@ -106,6 +137,7 @@ routerPers.put("/searchPersoPseudo/", async (req, res) => {
     //console.log(pseudo)
     try {
         const idToken = req.headers['authorization'];
+        
         // Verification du token
         jwt.verify(idToken, jwtSecret, async (err, decodedToken) => {
             if (err) {
@@ -136,13 +168,13 @@ routerPers.put("/searchPersoPseudo/", async (req, res) => {
                 }
 
                 if (persoData.length > 0) {
-                    const jsonString = JSON.stringify(persoData);
+                    // const jsonString = JSON.stringify(persoData);
                     console.log("Personnage trouver avec ce Pseudo!");
                     res.status(200).json({ message: 'Personnage trouver avec ce Pseudo!' });
                     //res.json(jsonString);
                 } else {
                     console.log("Aucun personnage trouver avec ce Pseudo!");
-                    res.status(404).json({ message: 'Aucune donnée trouvée pour ce Pseudo.' });
+                    res.status(201).json({ message: 'Aucune donnée trouvée pour ce Pseudo.' });
                 }
             }
         });
