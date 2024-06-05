@@ -15,11 +15,7 @@ dotenv.config();
 const app = express();
 app.enable('trust proxy');
 app.use(express.json());
-app.use(cors({
-  origin: 'https://presfolio.netlify.app/', // Remplacez cette URL par l'URL de votre front-end
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 
 app.get("/", async (req, res) => {
   
