@@ -13,9 +13,21 @@ import routerUser from "./Routes/Utilisateur.js";
 dotenv.config();
 
 const app = express();
+// app.enable('trust proxy');
+// app.use(express.json());
+// app.use(cors());
+
 app.enable('trust proxy');
 app.use(express.json());
-app.use(cors());
+
+// Configure CORS
+const corsOptions = {
+  origin: ['https://presfolio.netlify.app' , 'http://localhost:4200/'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 
 app.get("/", async (req, res) => {
   
