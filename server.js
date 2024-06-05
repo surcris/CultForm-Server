@@ -24,8 +24,8 @@ app.use(express.json());
 const corsOptions = {
   credences : true ,
   origin: ['https://presfolio.netlify.app' , 'http://localhost:4200/'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  // methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  // allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
