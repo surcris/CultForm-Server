@@ -49,5 +49,5 @@ app.listen(3081, () => {
   setInterval(() => {
     counter += 1;
     console.log(`Compteur: ${counter}`);
-  }, 10000); // 60000ms = 10 secondes
+  }, 60000); // 60000ms = 60 secondes
 })
