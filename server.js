@@ -43,11 +43,11 @@ app.use('/users',routerUser);
 
 app.listen(3081, () => {
   console.log("Serveur ecoute au port 3081")
-  
+
   let counter = 0;
 
   setInterval(() => {
     counter += 1;
     console.log(`Compteur: ${counter}`);
-  }, 10000); // 10000ms = 10 secondes
+  }, 10000); // 60000ms = 10 secondes
 })
